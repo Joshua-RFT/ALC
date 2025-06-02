@@ -1,0 +1,36 @@
+{
+  "repo": "unknown_repo",
+  "base_commit": "unknown_not_a_git_repo",
+  "structure": {
+    "pytest": {
+      "main.py": {
+        "classes": [],
+        "functions": [],
+        "text": [
+          "age = 18",
+          "if age >= 18:",
+          "    print(f\"\\n{name} \u5df2\u7ecf\u6210\u5e74\u4e86\u3002\")",
+          "else:",
+          "    print(f\"\\n{name} \u5c1a\u672a\u6210\u5e74\u3002\")",
+          "",
+          "# \u4e00\u4e2a\u7b80\u5355\u7684\u5faa\u73af",
+          "print(\"\\n--- \u5faa\u73af\u793a\u4f8b ---\")",
+          "fruits = [\"\u82f9\u679c\", \"\u9999\u8549\", \"\u6a59\u5b50\"]",
+          "for fruit in fruits:",
+          "    print(f\"\u6211\u559c\u6b22\u5403 {fruit}\u3002\")"
+        ]
+      },
+      ".idea": {
+        ".gitignore": {},
+        "misc.xml": {},
+        "modules.xml": {},
+        "pytest.iml": {},
+        "workspace.xml": {},
+        "inspectionProfiles": {
+          "profiles_settings.xml": {}
+        }
+      }
+    }
+  },
+  "instance_id": "pytest"
+}

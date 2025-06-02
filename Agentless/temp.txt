@@ -1,0 +1,71 @@
+$env:OPENAI_API_KEY='sk-d0a0f3193ca546a684bec5a662c77f72'
+$env:OPENAI_API_URL='https://api.deepseek.com/v1'
+$env:PROJECT_FILE_LOC='F:\Python\Agentless\SWE-Bench\swebench_repo_structure\repo_structure\repo_structures'
+                ebd    #api_key='sk-deaba75c8e25405da26a41f34a34e51b',
+
+
+
+$env:HF_ENDPOINT='https://hf-mirror.com'
+
+chcp 65001
+$env:PYTHONIOENCODING="UTF-8"
+
+set PYTHONIOENCODING=UTF-8
+
+swe_bench_data = load_dataset("json", data_files="dataset/dataset.json")
+
+==========================1=================================
+
+python agentless/fl/localize.py --file_level --output_folder results/swe-bench-lite/file_level --num_threads 1 --skip_existing --target_id=astropy__astropy-12907-deyudada
+
+
+
+
+===========================2================================
+
+python agentless/fl/localize.py --file_level --irrelevant --output_folder results/swe-bench-lite/file_level_irrelevant --num_threads 1 --skip_existing --target_id=astropy__astropy-12907-deyudada
+
+
+
+============================3===============================
+
+python agentless/fl/retrieve.py --index_type simple --filter_type given_files --filter_file results/swe-bench-lite/file_level_irrelevant/loc_outputs.jsonl --output_folder results/swe-bench-lite/retrievel_embedding --persist_dir embedding/swe-bench_simple --num_threads 1 --target_id=astropy__astropy-12907-deyudada
+
+
+
+============================4===============================
+
+python agentless/fl/combine.py --retrieval_loc_file results/swe-bench-lite/retrievel_embedding/retrieve_locs.jsonl --model_loc_file results/swe-bench-lite/file_level/loc_outputs.jsonl --top_n 3 --output_folder results/swe-bench-lite/file_level_combined
+
+
+
+============================5===============================
+
+python agentless/fl/localize.py --related_level --output_folder results/swe-bench-lite/related_elements --top_n 3 --compress_assign --compress --start_file results/swe-bench-lite/file_level_combined/combined_locs.jsonl --num_threads 1 --skip_existing --target_id=astropy__astropy-12907-deyudada
+
+
+
+=============================6==============================--num_samples 4
+
+python agentless/fl/localize.py --fine_grain_line_level --output_folder results/swe-bench-lite/edit_location_samples --top_n 3 --compress --temperature 0.8 --num_samples 1 --start_file results/swe-bench-lite/related_elements/loc_outputs.jsonl --num_threads 1 --skip_existing --target_id=astropy__astropy-12907-deyudada
+
+
+
+==============================7=============================--num_samples 4
+
+python agentless/fl/localize.py --merge --output_folder results/swe-bench-lite/edit_location_individual --top_n 3 --num_samples 1 --start_file results/swe-bench-lite/edit_location_samples/loc_outputs.jsonl --target_id=astropy__astropy-12907-deyudada
+
+
+
+==============================8=============================--max_samples 10
+
+python agentless/repair/repair.py --loc_file results/swe-bench-lite/edit_location_individual/loc_merged_0-0_outputs.jsonl --output_folder results/swe-bench-lite/repair_sample_1 --loc_interval --top_n=3 --context_window=10 --max_samples 1 --cot --diff_format --gen_and_process --num_threads 1 --target_id=astropy__astropy-12907-deyudada
+
+
+
+for ($i = 0; $i -le 3; $i++) {
+    python agentless/repair/repair.py --loc_file results/swe-bench-lite/edit_location_individual/loc_merged_${i}-${i}_outputs.jsonl --output_folder results/swe-bench-lite/repair_sample_$($i+1) --loc_interval --top_n=3 --context_window=10 --max_samples 10 --cot --diff_format --gen_and_process --num_threads 1 --target_id=astropy__astropy-12907
+}
+
+
+
